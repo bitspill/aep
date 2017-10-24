@@ -8,8 +8,8 @@ test('simplePOST promise 400', () => {
       console.log('checking stuff')
       expect.assertions(3)
       expect(res).toBeDefined()
-      expect(res.response.status).toBe(400)
-      expect(res.response.data).toBe('transaction already in block chain (code -27)')
+      expect(res.status).toBe(400)
+      expect(res.data).toBe('transaction already in block chain (code -27)')
     })
 })
 
@@ -18,8 +18,8 @@ test('simplePOST callback 400', (done) => {
 
   let cb = (err, res) => {
     expect(err).toBeDefined()
-    expect(err.response.status).toBe(400)
-    expect(err.response.data).toBe('transaction already in block chain (code -27)')
+    expect(err.status).toBe(400)
+    expect(err.data).toBe('transaction already in block chain (code -27)')
     done()
   }
 

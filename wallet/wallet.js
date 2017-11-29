@@ -279,4 +279,4 @@ Wallet.prototype.verifyMessage = function (address, message, signature) {
   return false
 }
 
-module.exports = Wallet
+module.exports = { Wallet }

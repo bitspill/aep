@@ -82,7 +82,7 @@ Key.prototype.getUTXO = function (coinName) {
 Key.prototype.getNameFromAddress = function (addr) {
   for (let c in this.coins) {
     if (this.coins.hasOwnProperty(c)) {
-      if (this.coins[c].address === addr) {
+      if (c === addr || this.coins[c].address === addr) {
         return c
       }
     }

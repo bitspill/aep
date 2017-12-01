@@ -6,6 +6,16 @@ let ax = axios.create({
   baseURL: 'https://flovault.alexandria.io/wallet/'
 })
 
+function create (email) {
+  if (email !== '' && !validation.isValidEmail(email)) {
+    return Promise.reject(new Error('invalid email'))
+  }
+
+  return ax.post('create/', {email: email}).then((res) => {
+    return Promise.resolve(res.data)
+  })
+}
+
 function checkLoad (identifier) {
   if (!validation.isValidIdentifier(identifier)) {
     let ret = {
@@ -135,6 +145,7 @@ function store (data) {
 }
 
 module.exports = {
+  create: callbackify(create),
   checkLoad: callbackify(checkLoad),
   load: callbackify(load),
   readAccount: callbackify(readAccount),

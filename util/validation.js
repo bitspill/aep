@@ -15,9 +15,13 @@ function isValidPrivKey (priv, network) {
 }
 
 const tldBlacklist = ['mailinator.com']
+function isValidEmail (email) {
+  return isemail.validate(email, {tldBlacklist: tldBlacklist})
+}
+
 function isValidIdentifier (identifier) {
   // for example 75c1209-dbcac5a6-e040977-64a52ae
-  return /^[0-9a-f]{7}-[0-9a-f]{8}-[0-9a-f]{7}-[0-9a-f]{7}$/.test(identifier) || isemail.validate(identifier, {tldBlacklist: tldBlacklist})
+  return /^[0-9a-f]{7}-[0-9a-f]{8}-[0-9a-f]{7}-[0-9a-f]{7}$/.test(identifier) || isValidEmail(identifier)
 }
 
 function isValidSharedKey (sharedKey) {
@@ -26,6 +30,7 @@ function isValidSharedKey (sharedKey) {
 }
 
 module.exports = {
+  isValidEmail: isValidEmail,
   isValidAddress: isValidAddress,
   isValidPrivKey: isValidPrivKey,
   isValidIdentifier: isValidIdentifier,

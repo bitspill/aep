@@ -1,12 +1,28 @@
 const CryptoJS = require('crypto-js')
-const Wallet = require('./wallet')
+const wallet = require('./wallet')
 const isValidAddress = require('../util').validation.isValidAddress
 const networks = require('../coins/networks')
 
 // ToDo: Mock Insight for these tests, currently fragile as they depend upon actual data
 
+test.skip('new wallet creation', () => {
+  // Skipped to prevent flooding DB with new accounts
+  expect.hasAssertions()
+
+  return wallet.createNewWallet({
+    email: '',
+    password: 'aepTestWallet',
+    coins: ['florincoin', 'litecoin'],
+    defaultCrypto: 'litecoin'
+  }).then((wal) => {
+    expect(wal).toBeDefined()
+    expect(wal.keys.length).toBe(1)
+    expect(wal.defaultCrypto).toBe('litecoin')
+  })
+})
+
 test('wallet constructor', () => {
-  let wal = new Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
+  let wal = new wallet.Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
   expect(wal.identifier).toBe('75c1209-dbcac5a6-e040977-64a52ae')
   expect(wal.password).toBe('PublicDevAccount')
 })
@@ -14,7 +30,7 @@ test('wallet constructor', () => {
 test('wallet load', () => {
   expect.hasAssertions()
 
-  let wal = new Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
+  let wal = new wallet.Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
 
   return wal.load().then(() => {
     expect(wal.identifier).toBe('75c1209-dbcac5a6-e040977-64a52ae')
@@ -32,7 +48,7 @@ test.skip('wallet refresh balance', () => {
   jest.setTimeout(30 * 1000)
   expect.hasAssertions()
 
-  let wal = new Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
+  let wal = new wallet.Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
 
   return wal.load().then(() => {
     return wal.refreshBalances().then(() => {
@@ -46,7 +62,7 @@ test.skip('wallet refresh', () => {
   jest.setTimeout(60 * 1000)
   expect.hasAssertions()
 
-  let wal = new Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
+  let wal = new wallet.Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
 
   return wal.load().then(() => {
     return wal.refresh().then(() => {
@@ -92,7 +108,7 @@ test('wallet store', () => {
   jest.setTimeout(60 * 1000)
   expect.hasAssertions()
 
-  let wal = new Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
+  let wal = new wallet.Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
 
   return wal.load().then(() => {
     return wal.refresh().then(() => {
@@ -109,7 +125,7 @@ test('wallet new address', () => {
   jest.setTimeout(60 * 1000)
   expect.hasAssertions()
 
-  let wal = new Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
+  let wal = new wallet.Wallet('75c1209-dbcac5a6-e040977-64a52ae', 'PublicDevAccount')
 
   return wal.load().then(() => {
     let a = wal.newAddress('florincoin')

@@ -276,7 +276,7 @@ Key.prototype.refreshBalance = callbackify(function () {
     }))
   }
 
-  return Promise.all(p)
+  return Promise.allSettled(p)
 })
 
 Key.prototype.refreshUnspent = callbackify(function () {
@@ -294,7 +294,19 @@ Key.prototype.refreshUnspent = callbackify(function () {
     }))
   }
 
-  return Promise.all(p)
+  return Promise.allSettled(p)
 })
+
+if (!Promise.allSettled) {
+  Promise.allSettled = function (promises) {
+    return Promise.all(promises.map(p => Promise.resolve(p).then(v => ({
+      state: 'fulfilled',
+      value: v
+    }), r => ({
+      state: 'rejected',
+      reason: r
+    }))))
+  }
+}
 
 module.exports = Key

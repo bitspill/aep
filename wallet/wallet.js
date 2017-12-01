@@ -24,6 +24,42 @@ function Wallet (identifier, password, defaultCrypto) {
   this.keys = []
 }
 
+function createNewWallet (options) {
+  let {
+    email = '',
+    password = '',
+    coins = 'florincoin',
+    defaultCrypto = 'florincoin'
+  } = options
+
+  if (!Array.isArray(coins)) {
+    coins = [coins]
+  }
+
+  return flovault.create(email).then((fv) => {
+    if (fv.error !== false) {
+      return Promise.reject(new Error('Flovault create failed: ' + fv.errorText))
+    }
+
+    let {identifier, shared_key: sk} = fv
+    let wal = new Wallet(identifier, password, defaultCrypto)
+
+    wal.sharedKey = sk
+    wal.newAddress(coins[0])
+    for (let c of coins) {
+      wal.keys[0].addCoin(c)
+    }
+
+    return wal.store().then((storeResponse) => {
+      if (storeResponse.error !== false) {
+        return Promise.reject(new Error('Unable to store new wallet: ' + storeResponse.errorText))
+      }
+
+      return Promise.resolve(wal)
+    })
+  })
+}
+
 Wallet.prototype.load = callbackify(function () {
   if (this.sharedKey !== '') {
     let err = new Error('Wallet already loaded')
@@ -279,4 +315,4 @@ Wallet.prototype.verifyMessage = function (address, message, signature) {
   return false
 }
 
-module.exports = { Wallet }
+module.exports = {createNewWallet: callbackify(createNewWallet), Wallet}
